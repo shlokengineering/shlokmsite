@@ -1,0 +1,6 @@
+-- Optional local dev seed data. Run with `supabase db reset` (applies migrations then this file).
+--
+-- To make an existing user an admin after they've signed up once (so a profile row exists):
+--   update profiles set role = 'admin' where id = '<auth-user-uuid>';
+--
+-- No fake case data is seeded by default to keep local dev aligned with the real schema.
