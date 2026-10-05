@@ -70,9 +70,6 @@ export default function AboutPage() {
             Our goal is to be Nepal&apos;s most trusted engineering survey and loss assessment consultancy. We keep
             every assignment independent, confidential and professional.
           </p>
-          <p className="text-justify leading-7 text-slate-600">
-            Our work includes heavy equipment fire, accident and landslide assessments.
-          </p>
         </div>
         <div className="rounded-lg border border-slate-200 bg-white p-6">
           <h3 className="mb-3 text-lg font-semibold text-slate-800">Why clients choose us</h3>
