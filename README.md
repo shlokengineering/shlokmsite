@@ -4,9 +4,6 @@ Web app for managing the lifecycle of motor insurance survey cases in Nepal: cas
 registration, surveyor deputation, visits, status tracking, report submission, and payment
 status.
 
-See [claude.md](./claude.md) for the full product/technical spec this app was built from, and
-[database.md](./database.md) for the original schema notes.
-
 ## Stack
 
 - React + TypeScript (Vite)
@@ -82,36 +79,3 @@ supabase/
   migrations/               # schema + RLS + triggers
   seed.sql
 ```
-
-## Decisions made while scaffolding (please confirm)
-
-`claude.md` flagged a few schema questions before building. Defaults chosen so the app is
-functional; revisit these with the team:
-
-- **`payments.case_id`**: added (payments has a 1:1 unique FK to `cases`). Without it there was
-  no way to know what a payment was for.
-- **Surveyor assignment**: modeled as `cases.assigned_surveyor_id` (not a separate
-  `case_assignments` table) — simpler RLS, one surveyor per case at a time. Re-assigning
-  overwrites the previous value; history of past assignees is only visible via the `statuses`
-  timeline (a `deputed` entry is recorded on each assignment).
-- **Payments visibility**: admin-only for both read and write. Surveyors currently cannot see
-  payment status for their cases.
-- **`visits` / `statuses` numbering**: `visit_no` / `status_no` are assigned server-side by a
-  trigger (`max + 1` per case), not sent by the client. `statuses` rows cannot be updated or
-  deleted (enforced by a DB trigger), per the append-only rule.
-- **New surveyor accounts**: surveyors self-register at `/signup` (Supabase Auth `signUp` with
-  the public anon key — no service role needed). A DB trigger auto-creates their `profiles` row
-  with role `surveyor`. Admins can then promote/demote any existing profile's role from the
-  **Surveyors** admin page. There's still no way to *invite* someone by email or create an
-  account on their behalf from the app — that would require the Supabase Admin API
-  (service role key) in an Edge Function, which doesn't exist yet.
-- **Nepali (BS) dates**: not implemented; all dates are Gregorian (`date` columns) for now.
-- **Report format**: a simple versioned free-text draft/final flow (`reports` table), not a
-  structured PDF/insurer-specific template.
-
-## Still open (see `claude.md` TODOs)
-
-Company details for the About page, notifications, custom domain, and the final list of
-lifecycle stages are placeholders — update `src/pages/About.tsx`, the `STATUS_STAGES` array in
-`src/types/domain.ts`, and the matching `stage` CHECK constraint in
-`supabase/migrations/20260930120000_init.sql` together if these change.
